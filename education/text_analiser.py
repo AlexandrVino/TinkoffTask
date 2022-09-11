@@ -1,4 +1,5 @@
 import os
+import sys
 
 
 def prepare_text(text) -> list:
@@ -15,22 +16,32 @@ def load_text(file_name: str) -> list:
         return prepare_text(f.read())
 
 
-def analise_text(data: dict, file_dirname: str, n=4):
-    for file_name in os.listdir(file_dirname):
+def analise_text(text, text_len, data, n):
+    for i in range(text_len - 1):
 
-        print(f'Texts/{file_name}')
+        keys = [' '.join(tuple(text[i:k + 1])) for k in range(i, i + n)]
+        values = [text[i + k + 1] for k in range(i, i + n) if i + k + 1 < text_len]
 
-        text = load_text(f'{file_dirname}/{file_name}')
-        text_len = len(text)
+        for key, value in zip(keys, values):
 
-        for i in range(text_len - 1):
+            if not data.get(key): data[key] = {}
+            if not data[key].get(value): data[key][value] = 0
 
-            keys = [' '.join(tuple(text[i:k + 1])) for k in range(i, i + n)]
-            values = [text[i + k + 1] for k in range(i, i + n) if i + k + 1 < text_len]
+            data[key][value] += 1
 
-            for key, value in zip(keys, values):
 
-                if not data.get(key): data[key] = {}
-                if not data[key].get(value): data[key][value] = 0
+def wrapper(data: dict, file_dirname: str = None, n=4):
 
-                data[key][value] += 1
+    if file_dirname:
+
+        for file_name in os.listdir(file_dirname):
+            print(f'Texts/{file_name}')
+
+            text = load_text(f'{file_dirname}/{file_name}')
+            text_len = len(text)
+
+            analise_text(text, text_len, data, n)
+
+    else:
+        for line in sys.stdin:
+            analise_text(line, len(line), data, n)

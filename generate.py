@@ -1,6 +1,15 @@
+import os
 import random
 
 from utils import load_data
+from configargparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+
+PATH = os.getcwd()
+parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+
+parser.add_argument('--length', type=int, default=45, help='Text length')
+parser.add_argument('--prefix', type=str, help='Start word')
+parser.add_argument('--model', type=str)
 
 
 def get_data():
@@ -8,7 +17,6 @@ def get_data():
 
 
 def get_word(words):
-
     word = random.choice(words)
     while len(word.split()) != 1:
         word = random.choice(words)
@@ -17,12 +25,17 @@ def get_word(words):
 
 
 def main():
-    k = 45
+    args = parser.parse_args()
+
+    k = args.length
     n = 3
 
     data, words = get_data()
+    if not args.prefix:
+        word = get_word(words)
+    else:
+        word = args.prefix.lower()
 
-    word = get_word(words)
     text = generate([word], k, n, data)
     while text == -1:
         word = get_word(words)
