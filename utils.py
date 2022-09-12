@@ -1,8 +1,9 @@
 import json
 
+from typing import Tuple, List, Dict
 
-def prepare_data_to_write(data: dict) -> tuple[dict, list]:
 
+def prepare_data_to_write(data: dict) -> Tuple[dict, list]:
     new_data = {}
 
     for key, value in data.items():
@@ -10,7 +11,7 @@ def prepare_data_to_write(data: dict) -> tuple[dict, list]:
     return new_data, list(data.keys())
 
 
-def load_data(file_name: str = 'data.json') -> dict | list:
+def load_data(file_name: str = 'data.json') -> Dict:
     with open(file_name, 'r', encoding='utf8') as f:
         return json.loads(f.read())
 

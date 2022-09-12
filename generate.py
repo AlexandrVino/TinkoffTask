@@ -34,7 +34,7 @@ def main():
     if not args.prefix:
         word = get_word(words)
     else:
-        word = args.prefix.lower()
+        word = args.prefix.lower().strip()
 
     text = generate([word], k, n, data)
     while text == -1:
